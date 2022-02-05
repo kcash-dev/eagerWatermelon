@@ -1,3 +1,5 @@
+import { normalize } from "./ResponsiveText"
+
 export const colors = {
     black: '#000',
     white: '#fff',
@@ -14,6 +16,15 @@ export const sizes = {
     xl: 32,
     xxl: 48,
     xxxl: 64
+}
+
+export const fontSizes = {
+    sm: normalize(12),
+    md: normalize(18),
+    lg: normalize(24),
+    xl: normalize(32),
+    xxl: normalize(48),
+    xxxl: normalize(64)
 }
 
 export const shadow = {

@@ -3,7 +3,7 @@ import React from 'react';
 
 //Components
 import PressableWrapper from './PressableWrapper';
-import { colors, shadow, sizes } from '../../theme/Variables';
+import { colors, shadow, sizes, fontSizes } from '../../theme/Variables';
 
 const Button = ({ title, bgColor, textColor, callback }) => {
     
@@ -29,12 +29,12 @@ const styles = StyleSheet.create({
         width: 100,
         aspectRatio: 2 / 1,
         backgroundColor: colors.primary,
-        borderRadius: 5,
+        borderRadius: 8,
         justifyContent: 'center',
         alignItems: 'center'
     },
     text: {
-        fontSize: sizes.md,
+        fontSize: fontSizes.md,
         color: colors.secondary,
         fontWeight: 'bold'
     }
