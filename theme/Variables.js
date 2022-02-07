@@ -10,17 +10,17 @@ export const colors = {
 }
 
 export const sizes = {
-    sm: 12,
-    md: 18,
-    lg: 24,
-    xl: 32,
-    xxl: 48,
-    xxxl: 64
+    sm: 10,
+    md: 15,
+    lg: 20,
+    xl: 30,
+    xxl: 40,
+    xxxl: 50
 }
 
 export const fontSizes = {
     sm: normalize(12),
-    md: normalize(18),
+    md: normalize(16),
     lg: normalize(24),
     xl: normalize(32),
     xxl: normalize(48),

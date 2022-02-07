@@ -1,33 +1,75 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React, { useState } from 'react';
-import { MaterialIcons } from '@expo/vector-icons';
-import { colors, sizes } from '../../theme/Variables';
+import React, { useEffect, useState } from 'react';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { colors, sizes, shadow } from '../../theme/Variables';
+import Animated, {
+    useSharedValue,
+    withTiming,
+    useAnimatedStyle
+} from 'react-native-reanimated';
 
 //Components
 import PressableWrapper from './PressableWrapper';
 
 const HabitContainer = ({ item }) => {
-    const [ checked, setChecked ] = useState(false)
-    
-    const checkHabit = () => {
-        setChecked(true)
+    const [ completed, setCompleted ] = useState(0)
+    const [ goal, setGoal ] = useState(5)
+    const [ progressPercentage, setProgressPercentage ] = useState()
+    const progressWidth = useSharedValue('0%')
+
+    const onPress = () => {
+        if (completed !== goal) {
+            setCompleted(completed + 1)
+        }
     }
 
+    useEffect(() => {
+        const percentage = (completed / goal) * 100
+        progressWidth.value = `${percentage}%`
+    }, [ completed ])
+
+    const transitionConfig = {
+        duration: 200
+      }
+    
+    const progressWidthStyles = useAnimatedStyle(() => {
+    return {
+        width: withTiming(progressWidth.value, transitionConfig)
+    }
+    })
+
   return (
-    <PressableWrapper>
-        <View style={ styles.container }>
-        <Text style={ styles.text }>{ item.habitName }</Text>
-        <PressableWrapper
-            pressOut={ checkHabit }
-        >
-            { checked ?
-                <View style={ styles.background }>
-                    <MaterialIcons name="check-circle" size={sizes.xl} color={ colors.green } />
-                </View> 
+    <PressableWrapper
+        pressOut={ onPress }
+    >
+        <View style={[ styles.container, shadow ]}>
+            <Animated.View 
+                style={[
+                    { 
+                        backgroundColor: item.color, 
+                        height: '100%', 
+                        borderRadius: 8,
+                        position: 'absolute' 
+                    },
+                    progressWidthStyles
+                ]}
+            >
+            </Animated.View>
+            <View style={ styles.innerTextContainer }>
+                <Text style={ styles.text }>{ item.habitName }</Text>
+                <Text>{ completed }/{ goal }</Text>
+            </View>
+            { completed === goal ?
+                <View style={ styles.checkContainer }>
+                    <MaterialCommunityIcons 
+                        name="check-bold" 
+                        size={sizes.lg} 
+                        color={ colors.black }
+                    />
+                </View>
                 :
-                <MaterialIcons name="check-circle" size={sizes.xl} color={ colors.black } />
-                }
-        </PressableWrapper>
+                null
+            }
         </View>
     </PressableWrapper>
   );
@@ -37,20 +79,29 @@ export default HabitContainer;
 
 const styles = StyleSheet.create({
     container: {
-        width: '100%',
-        height: 50,
+        width: '90%',
+        alignSelf: 'center',
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: colors.invalid
+        backgroundColor: colors.invalid,
+        borderRadius: 8,
+        justifyContent: 'space-between'
+    },
+    innerTextContainer: {
+        paddingLeft: sizes.sm,
+        paddingVertical: sizes.sm
     },
     text: {
         fontSize: sizes.xl
     },
     background: {
         backgroundColor: colors.black,
-        borderRadius: 100
+        borderRadius: sizes.xxxl * 2,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: sizes.sm,
+    },
+    checkContainer: {
+        paddingRight: sizes.sm
     }
 });

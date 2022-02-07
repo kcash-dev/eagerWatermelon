@@ -13,8 +13,33 @@ import { colors, shadow, sizes, fontSizes } from '../../theme/Variables';
 import Button from '../components/Button';
 import HabitContainer from '../components/HabitContainer';
 import PressableWrapper from '../components/PressableWrapper';
+import ColorCircle from '../components/ColorCircle';
 
 const windowHeight = Dimensions.get('window').height
+
+const colorChoices = [
+  {
+    color: '#f94144'
+  },
+  {
+    color: '#f8961e'
+  },
+  {
+    color: '#f9c74f'
+  },
+  {
+    color: '#90be6d'
+  },
+  {
+    color: '#4d908e'
+  },
+  {
+    color: '#277da1'
+  },
+  {
+    color: '#000'
+  }
+]
 
 const HomeScreen = () => {
   const [ habitName, setHabitName ] = useState('')
@@ -26,13 +51,16 @@ const HomeScreen = () => {
   const [ goalTimes, setGoalTimes ] = useState()
   const [ group, setGroup ] = useState('')
   const [ daysToTrack, setDaysToTrack ] = useState([])
-  const [ inputIsFocused, setInputIsFocused ] = useState(false)
+  const [ nameInputIsFocused, setNameInputIsFocused ] = useState(false)
+  const [ groupInputIsFocused, setGroupInputIsFocused ] = useState(false)
+  const [ color, setColor ] = useState()
+  const [ selectedColor, setSelectedColor ] = useState()
 
 
+  console.log(color, "COLOR")
   const transitionConfig = {
     duration: 200
   }
-
 
   const habitInputStyles = useAnimatedStyle(() => {
     return {
@@ -41,7 +69,7 @@ const HomeScreen = () => {
   })
 
   const showHabitInput = () => {
-      habitInputHeight.value = windowHeight * .1
+      habitInputHeight.value = windowHeight * .0
       setInputIsShowing(true)
   }
 
@@ -58,12 +86,20 @@ const HomeScreen = () => {
     setHabitsList([
       ...habitsList,
       {
-        habitName: habitName
+        habitName: habitName,
+        habitType: buildOrQuit,
+        goalType: goalType,
+        goalFrequency: goalTimes,
+        group: group,
+        color: color
       }
     ])
     habitInputHeight.value = windowHeight
     setInputIsShowing(false)
     clearText()
+    setBuildOrQuit('Build')
+    setGoalType('day')
+    setGoalTimes('')
   }
 
   const clearText = () => {
@@ -90,12 +126,25 @@ const HomeScreen = () => {
     setGoalType('year')
   }
 
-  const setIsFocused = () => {
-    setInputIsFocused(true)
+  const setNameIsFocused = () => {
+    setNameInputIsFocused(true)
   }
 
-  const setNotFocused = () => {
-    setInputIsFocused(false)
+  const setNameNotFocused = () => {
+    setNameInputIsFocused(false)
+  }
+
+  const setGroupIsFocused = () => {
+    setGroupInputIsFocused(true)
+  }
+
+  const setGroupNotFocused = () => {
+    setGroupInputIsFocused(false)
+  }
+
+  const getColorChoice = (color) => {
+    setColor(color)
+    setSelectedColor(color)
   }
 
   return (
@@ -112,20 +161,20 @@ const HomeScreen = () => {
       </View>
       <Animated.View style={[ styles.inputsContainer, habitInputStyles, shadow]}>
         {/* <Text style={ styles.habitHeader }>Enter your habit:</Text> */}
-        <KeyboardAvoidingView style={[ styles.inputContainer, shadow, { backgroundColor: inputIsFocused ? colors.white : colors.invalid } ]}>
+        <KeyboardAvoidingView style={[ styles.inputContainer, shadow, { backgroundColor: nameInputIsFocused ? colors.white : colors.invalid } ]}>
           <TextInput 
             value={ habitName }
             onChangeText={ setHabitName }
             style={[ styles.habitInput ]}
             autoCorrect
             placeholder='Enter a habit name'
-            onFocus={ setIsFocused }
-            onBlur={ setNotFocused }
+            onFocus={ setNameIsFocused }
+            onBlur={ setNameNotFocused }
           />
           <PressableWrapper
             pressOut={ clearText }
           >
-            <MaterialCommunityIcons name="close-circle" size={ sizes.xl } color={ colors.invalid } />
+            <MaterialCommunityIcons name="close-circle" size={ sizes.lg } color={ colors.invalid } />
           </PressableWrapper>
         </KeyboardAvoidingView>
         <View style={[ styles.selectContainer ]}>
@@ -181,26 +230,38 @@ const HomeScreen = () => {
               value={ goalTimes }
               onChangeText={text => setGoalTimes(text) }
               style={[ styles.goalTimeInput ]}
+              keyboardType='numeric'
             />
             <Text>or more times per { goalType }</Text>
           </View>
         </View>
-        <KeyboardAvoidingView style={[ styles.inputContainer, shadow, { backgroundColor: inputIsFocused ? colors.white : colors.invalid } ]}>
+        <KeyboardAvoidingView style={[ styles.inputContainer, shadow, { backgroundColor: groupInputIsFocused ? colors.white : colors.invalid } ]}>
           <TextInput 
             value={ group }
             onChangeText={text => setGroup(text) }
             style={[ styles.habitInput ]}
             autoCorrect
             placeholder='Enter group name'
-            onFocus={ setIsFocused }
-            onBlur={ setNotFocused }
+            onFocus={ setGroupIsFocused }
+            onBlur={ setGroupNotFocused }
           />
           <PressableWrapper
             pressOut={ clearText }
           >
-            <MaterialCommunityIcons name="close-circle" size={ sizes.xl } color={ colors.invalid } />
+            <MaterialCommunityIcons name="close-circle" size={ sizes.lg } color={ colors.invalid } />
           </PressableWrapper>
         </KeyboardAvoidingView>
+        <View style={ styles.colorContainer }>
+          <FlatList 
+            data={ colorChoices }
+            renderItem={({ item }) => (
+              <ColorCircle item={ item.color } callback={ getColorChoice } selectedColor={ selectedColor }/>
+            )}
+            keyExtractor={item => item.color}
+            horizontal
+            scrollEnabled={ false }
+          />
+        </View>
         <View style={ styles.buttons }>
           <Button 
             title="Submit"
@@ -230,8 +291,8 @@ const styles = StyleSheet.create({
     },
     addHabitButton: {
       position: 'absolute',
-      bottom: 20,
-      right: 20
+      bottom: sizes.lg,
+      right: sizes.lg
     },
     inputsContainer: {
       flex: 1,
@@ -239,21 +300,21 @@ const styles = StyleSheet.create({
       position: 'absolute',
       backgroundColor: colors.white,
       width: '100%',
-      height: '90%'
+      height: '100%'
     },
     inputContainer: {
       width: '90%',
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingHorizontal: 5,
-      marginTop: 10,
+      paddingHorizontal: sizes.sm / 2,
+      marginTop: sizes.sm,
       borderRadius: 8
     },
     habitInput: {
       width: '80%',
-      padding: 15,
-      fontSize: fontSizes.md
+      padding: sizes.sm,
+      fontSize: fontSizes.sm
     },
     buttons: {
       flexDirection: 'row',
@@ -261,18 +322,18 @@ const styles = StyleSheet.create({
       justifyContent: 'space-evenly',
       alignItems: 'center',
       position: 'absolute',
-      bottom: '10%'
+      bottom: '2%'
     },
     habitHeader: {
       fontSize: fontSizes.lg,
       fontWeight: 'bold',
-      marginBottom: 15
+      marginBottom: sizes.sm
     },
     selectContainer: {
       paddingHorizontal: 5,
       alignItems: 'center',
       width: '100%',
-      marginTop: 30
+      marginTop: sizes.xl
     },
     innerSelectContainer: {
       flexDirection: 'row',
@@ -283,18 +344,25 @@ const styles = StyleSheet.create({
       alignItems: 'center'
     },
     selectText: {
-      fontSize: fontSizes.md,
+      fontSize: fontSizes.sm,
       fontWeight: 'bold'
     },
     selectedBackground: {
       backgroundColor: colors.invalid,
-      padding: 5,
+      padding: sizes.sm / 2,
       borderRadius: 8
     },
     goalTimeInput: {
       backgroundColor: colors.invalid,
       borderRadius: 8,
-      padding: 15,
-      fontSize: fontSizes.md
+      padding: sizes.sm,
+      fontSize: fontSizes.sm
+    },
+    colorContainer: {
+      width: '100%',
+      height: 50,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: sizes.xl
     }
 });
