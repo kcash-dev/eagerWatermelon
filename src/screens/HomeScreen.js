@@ -185,6 +185,22 @@ const HomeScreen = () => {
             <Text>or more times per { goalType }</Text>
           </View>
         </View>
+        <KeyboardAvoidingView style={[ styles.inputContainer, shadow, { backgroundColor: inputIsFocused ? colors.white : colors.invalid } ]}>
+          <TextInput 
+            value={ group }
+            onChangeText={text => setGroup(text) }
+            style={[ styles.habitInput ]}
+            autoCorrect
+            placeholder='Enter group name'
+            onFocus={ setIsFocused }
+            onBlur={ setNotFocused }
+          />
+          <PressableWrapper
+            pressOut={ clearText }
+          >
+            <MaterialCommunityIcons name="close-circle" size={ sizes.xl } color={ colors.invalid } />
+          </PressableWrapper>
+        </KeyboardAvoidingView>
         <View style={ styles.buttons }>
           <Button 
             title="Submit"
