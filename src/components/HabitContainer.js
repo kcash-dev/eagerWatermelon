@@ -13,12 +13,12 @@ import PressableWrapper from './PressableWrapper';
 
 const HabitContainer = ({ item }) => {
     const [ completed, setCompleted ] = useState(0)
-    const [ goal, setGoal ] = useState(5)
+    const [ goal, setGoal ] = useState(item.goalFrequency)
     const [ progressPercentage, setProgressPercentage ] = useState()
     const progressWidth = useSharedValue('0%')
 
     const onPress = () => {
-        if (completed !== goal) {
+        if (completed < item.goalFrequency) {
             setCompleted(completed + 1)
         }
     }
@@ -30,48 +30,52 @@ const HabitContainer = ({ item }) => {
 
     const transitionConfig = {
         duration: 200
-      }
+    }
     
     const progressWidthStyles = useAnimatedStyle(() => {
-    return {
-        width: withTiming(progressWidth.value, transitionConfig)
-    }
+        return {
+            width: withTiming(progressWidth.value, transitionConfig)
+        }
     })
 
+    console.log(item)
+
   return (
-    <PressableWrapper
-        pressOut={ onPress }
-    >
-        <View style={[ styles.container, shadow ]}>
-            <Animated.View 
-                style={[
-                    { 
-                        backgroundColor: item.color, 
-                        height: '100%', 
-                        borderRadius: 8,
-                        position: 'absolute' 
-                    },
-                    progressWidthStyles
-                ]}
-            >
-            </Animated.View>
-            <View style={ styles.innerTextContainer }>
-                <Text style={ styles.text }>{ item.habitName }</Text>
-                <Text>{ completed }/{ goal }</Text>
-            </View>
-            { completed === goal ?
-                <View style={ styles.checkContainer }>
-                    <MaterialCommunityIcons 
-                        name="check-bold" 
-                        size={sizes.lg} 
-                        color={ colors.black }
-                    />
+      <View style={{ marginVertical: 10 }}>
+        <PressableWrapper
+            pressOut={ onPress }
+        >
+            <View style={[ styles.container, shadow ]}>
+                <Animated.View 
+                    style={[
+                        { 
+                            backgroundColor: item.color, 
+                            height: '100%', 
+                            borderRadius: 8,
+                            position: 'absolute' 
+                        },
+                        progressWidthStyles
+                    ]}
+                >
+                </Animated.View>
+                <View style={ styles.innerTextContainer }>
+                    <Text style={ styles.text }>{ item.habitName }</Text>
+                    <Text>{ item.goalType === 'day' ? `Today` : `This ${ item.goalType }` }: { completed }/{ goal }</Text>
                 </View>
-                :
-                null
-            }
-        </View>
-    </PressableWrapper>
+                { completed === item.goalFrequency ?
+                    <View style={[ styles.checkContainer ]}>
+                        <MaterialCommunityIcons 
+                            name="check-bold" 
+                            size={sizes.xl}
+                            color={ colors.green }
+                        />
+                    </View>
+                    :
+                    null
+                }
+            </View>
+        </PressableWrapper>
+      </View>
   );
 };
 

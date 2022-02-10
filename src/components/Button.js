@@ -3,7 +3,7 @@ import React from 'react';
 
 //Components
 import PressableWrapper from './PressableWrapper';
-import { colors, shadow, sizes, fontSizes } from '../../theme/Variables';
+import { colors, fontSizes } from '../../theme/Variables';
 
 const Button = ({ title, bgColor, textColor, callback }) => {
     
@@ -15,7 +15,7 @@ const Button = ({ title, bgColor, textColor, callback }) => {
     <PressableWrapper
         pressOut={ useCallback }
     >
-        <View style={[ styles.button, shadow, { backgroundColor: bgColor } ]}>
+        <View style={[ styles.button, { backgroundColor: bgColor } ]}>
             <Text style={[ styles.text, { color: textColor } ]}>{ title }</Text>
         </View>
     </PressableWrapper>
@@ -26,7 +26,7 @@ export default Button;
 
 const styles = StyleSheet.create({
     button: {
-        width: 100,
+        width: 60,
         aspectRatio: 2 / 1,
         backgroundColor: colors.primary,
         borderRadius: 8,
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     text: {
-        fontSize: fontSizes.md,
+        fontSize: fontSizes.sm,
         color: colors.secondary,
         fontWeight: 'bold'
     }
