@@ -14,11 +14,19 @@ import PressableWrapper from './PressableWrapper';
 const HabitContainer = ({ item }) => {
     const [ completed, setCompleted ] = useState(0)
     const [ goal, setGoal ] = useState(item.goalFrequency)
-    const [ progressPercentage, setProgressPercentage ] = useState()
     const progressWidth = useSharedValue('0%')
+    const [ dailyGoal, setDailyGoal ] = useState()
+
+    // const setDailyGoal = () => {
+    //     if (item.goalType === 'day') {
+    //         setDailyGoal(item.goalFrequency)
+    //     } else if (item.goalType === 'week') {
+    //         setDailyGoal(item.goalFrequency / item.daysToTrack.length)
+    //     } else if (item.goalType === 'year') {}
+    // }
 
     const onPress = () => {
-        if (completed < item.goalFrequency) {
+        if (completed < dailyGoal) {
             setCompleted(completed + 1)
         }
     }
@@ -54,7 +62,8 @@ const HabitContainer = ({ item }) => {
                             borderRadius: 8,
                             position: 'absolute' 
                         },
-                        progressWidthStyles
+                        progressWidthStyles,
+                        shadow
                     ]}
                 >
                 </Animated.View>
@@ -62,7 +71,7 @@ const HabitContainer = ({ item }) => {
                     <Text style={ styles.text }>{ item.habitName }</Text>
                     <Text>{ item.goalType === 'day' ? `Today` : `This ${ item.goalType }` }: { completed }/{ goal }</Text>
                 </View>
-                { completed === item.goalFrequency ?
+                { completed === dailyGoal ?
                     <View style={[ styles.checkContainer ]}>
                         <MaterialCommunityIcons 
                             name="check-bold" 

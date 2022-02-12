@@ -5,43 +5,20 @@ import Animated, {
   withTiming,
   useAnimatedStyle
 } from 'react-native-reanimated';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+
+
+import { colors, shadow, sizes, fontSizes } from '../../theme/Variables';
 
 //Components
-import AddHabitButton from '../components/AddHabitButton';
-import { colors, shadow, sizes, fontSizes } from '../../theme/Variables';
-import Button from '../components/Button';
 import HabitContainer from '../components/HabitContainer';
-import PressableWrapper from '../components/PressableWrapper';
-import ColorCircle from '../components/ColorCircle';
-import { ScrollView } from 'react-native-gesture-handler';
+import NewHabitInputProto from '../components/NewHabitInputProto';
 import BottomNav from '../components/BottomNav';
+import NewHabitInputs from '../components/NewHabitInputs';
 
 const windowHeight = Dimensions.get('window').height
 
-const colorChoices = [
-  {
-    color: '#f94144'
-  },
-  {
-    color: '#f8961e'
-  },
-  {
-    color: '#f9c74f'
-  },
-  {
-    color: '#90be6d'
-  },
-  {
-    color: '#4d908e'
-  },
-  {
-    color: '#277da1'
-  },
-  {
-    color: '#000'
-  }
-]
+
 
 const HomeScreen = () => {
   const [ habitName, setHabitName ] = useState('')
@@ -53,12 +30,12 @@ const HomeScreen = () => {
   const [ goalTimes, setGoalTimes ] = useState()
   const [ group, setGroup ] = useState('')
   const [ daysToTrack, setDaysToTrack ] = useState([])
-  const [ nameInputIsFocused, setNameInputIsFocused ] = useState(false)
-  const [ groupInputIsFocused, setGroupInputIsFocused ] = useState(false)
   const [ color, setColor ] = useState()
   const [ selectedColor, setSelectedColor ] = useState()
   const [ textLength, setTextLength ] = useState(20)
   const [ maxTextLength, setMaxTextLength ] = useState(20)
+  const [ nameInputIsFocused, setNameInputIsFocused ] = useState(false)
+  const [ groupInputIsFocused, setGroupInputIsFocused ] = useState(false)
 
   const transitionConfig = {
     duration: 200
@@ -157,7 +134,6 @@ const HomeScreen = () => {
       const daysArray = daysToTrack.slice()
       const index = daysArray.indexOf(day)
       const newArray = daysArray.splice(index, 1)
-      console.log(newArray, 'NEW')
       setDaysToTrack(daysArray)
     } else {
       setDaysToTrack([
@@ -187,193 +163,57 @@ const HomeScreen = () => {
         <BottomNav addCallback={ showHabitInput }/>
       </View>
       <Animated.View style={[ styles.inputsContainer, habitInputStyles, shadow ]}>
-        <ScrollView
-          style={ styles.scrollContainer }
-          contentContainerStyle={{ alignItems: 'center' }}
-          keyboardShouldPersistTaps='handled'
-        >
-          <View style={ styles.heading }>
-            <Text style={ styles.textHeader }>Create</Text>
-            <View style={ styles.buttons }>
-              <Button 
-                title="Save"
-                bgColor={ colors.primary }
-                textColor={ colors.secondary }
-                callback={ setNewHabit }
-              />
-              <Button 
-                title="Cancel"
-                bgColor={ colors.invalid }
-                textColor={ colors.black }
-                style={ styles.button }
-                callback={ hideHabitInput }
-              />
-            </View>
-          </View>
-          <View style={[ styles.inputContainer, shadow, { backgroundColor: nameInputIsFocused ? colors.white : colors.invalid } ]}>
-            <TextInput 
-              value={ habitName }
-              onChangeText={(text) => {
-                setTextLength(maxTextLength - text.length)
-                setHabitName(text) 
-              }}
-              style={[ styles.habitInput ]}
-              autoCorrect
-              placeholder='Enter a habit name'
-              onFocus={ setNameIsFocused }
-              onBlur={ setNameNotFocused }
-              maxLength={ maxTextLength }
-            />
-            { nameInputIsFocused ? 
-              <Text>{ textLength }</Text>
-              :
-              null
-            }
-            <PressableWrapper
-              pressOut={ clearText }
-            >
-              <MaterialCommunityIcons name="close-circle" size={ sizes.lg } color={ colors.invalid } />
-            </PressableWrapper>
-          </View>
-          <View style={[ styles.selectContainer ]}>
-            <Text>Are you building or quitting a habit?</Text>
-            <View style={ styles.innerSelectContainer }>
-              <PressableWrapper
-                pressOut={ setSelectedToBuild }
-              >
-                <View style={ buildOrQuit === 'Build' ? [styles.selectedBackground, shadow] : null }>
-                  <Text style={ styles.selectText }>Build</Text>
-                </View>
-              </PressableWrapper>
-              <PressableWrapper
-                pressOut={ setSelectedToQuit }
-              >
-                <View style={ buildOrQuit === 'Quit' ? [styles.selectedBackground, shadow] : null }>
-                  <Text style={ styles.selectText }>Quit</Text>
-                </View>
-              </PressableWrapper>
-            </View>
-          </View>
-          <View style={[ styles.selectContainer ]}>
-            <Text>How often do you want to do this goal?</Text>
-            <View style={ styles.innerSelectContainer }>
-              <PressableWrapper
-                pressOut={ setSelectedToDaily }
-              >
-                <View style={ goalType === 'day' ? [[styles.selectedBackground, shadow], shadow] : null }>
-                  <Text style={ styles.selectText }>Daily</Text>
-                </View>
-              </PressableWrapper>
-              <PressableWrapper
-                pressOut={ setSelectedToWeekly }
-              >
-                <View style={ goalType === 'week' ? [styles.selectedBackground, shadow] : null }>
-                  <Text style={ styles.selectText }>Weekly</Text>
-                </View>
-              </PressableWrapper>
-              <PressableWrapper
-                pressOut={ setSelectedToYearly }
-              >
-                <View style={ goalType === 'year' ? [styles.selectedBackground, shadow] : null }>
-                  <Text style={ styles.selectText }>Yearly</Text>
-                </View>
-              </PressableWrapper>
-            </View>
-          </View>
-          <View style={[ styles.selectContainer ]}>
-            <Text>How often do you want to do this goal?</Text>
-            <View style={ styles.innerSelectContainer }>
-              <View style={ styles.daySelector }>
-                <PressableWrapper
-                  pressOut={() => removeOrAddDay('Monday')}
-                >
-                  <View style={ daysToTrack.includes('Monday') ? [styles.selectedBackground, shadow] : null }>
-                    <Text style={ styles.daySelectText }>Monday</Text>
-                  </View>
-                </PressableWrapper>
-                <PressableWrapper
-                  pressOut={() => removeOrAddDay('Tuesday')}
-                >
-                  <View style={ daysToTrack.includes('Tuesday') ? [styles.selectedBackground, shadow] : null }>
-                    <Text style={ styles.daySelectText }>Tuesday</Text>
-                  </View>
-                </PressableWrapper>
-                <PressableWrapper
-                  pressOut={() => removeOrAddDay('Wednesday')}
-                >
-                  <View style={ daysToTrack.includes('Wednesday') ? [styles.selectedBackground, shadow] : null }>
-                    <Text style={ styles.daySelectText }>Wednesday</Text>
-                  </View>
-                </PressableWrapper>
-                <PressableWrapper
-                  pressOut={() => removeOrAddDay('Thursday')}
-                >
-                  <View style={ daysToTrack.includes('Thursday') ? [styles.selectedBackground, shadow] : null }>
-                    <Text style={ styles.daySelectText }>Thursday</Text>
-                  </View>
-                </PressableWrapper>
-                <PressableWrapper
-                  pressOut={() => removeOrAddDay('Friday')}
-                >
-                  <View style={ daysToTrack.includes('Friday') ? [styles.selectedBackground, shadow] : null }>
-                    <Text style={ styles.daySelectText }>Friday</Text>
-                  </View>
-                </PressableWrapper>
-                <PressableWrapper
-                  pressOut={() => removeOrAddDay('Saturday')}
-                >
-                  <View style={ daysToTrack.includes('Saturday') ? [styles.selectedBackground, shadow] : null }>
-                    <Text style={ styles.daySelectText }>Saturday</Text>
-                  </View>
-                </PressableWrapper>
-                <PressableWrapper
-                  pressOut={() => removeOrAddDay('Sunday')}
-                >
-                  <View style={ daysToTrack.includes('Sunday') ? [styles.selectedBackground, shadow] : null }>
-                    <Text style={ styles.daySelectText }>Sunday</Text>
-                  </View>
-                </PressableWrapper>
-              </View>
-            </View>
-            <View style={[ styles.innerSelectContainer, shadow ]}>
-              <TextInput 
-                placeholder='0'
-                value={ goalTimes }
-                onChangeText={text => setGoalTimes(text) }
-                style={[ styles.goalTimeInput ]}
-                keyboardType='numeric'
-              />
-              <Text>or more times per { goalType }</Text>
-            </View>
-          </View>
-          <View style={[ styles.inputContainer, shadow, { backgroundColor: groupInputIsFocused ? colors.white : colors.invalid } ]}>
-            <TextInput 
-              value={ group }
-              onChangeText={text => setGroup(text) }
-              style={[ styles.habitInput ]}
-              autoCorrect
-              placeholder='Enter group name'
-              onFocus={ setGroupIsFocused }
-              onBlur={ setGroupNotFocused }
-            />
-            <PressableWrapper
-              pressOut={ clearText }
-            >
-              <MaterialCommunityIcons name="close-circle" size={ sizes.lg } color={ colors.invalid } />
-            </PressableWrapper>
-          </View>
-          <View style={ styles.colorContainer }>
-            <FlatList 
-              data={ colorChoices }
-              renderItem={({ item }) => (
-                <ColorCircle item={ item.color } callback={ getColorChoice } selectedColor={ selectedColor }/>
-              )}
-              keyExtractor={item => item.color}
-              horizontal
-              scrollEnabled={ false }
-            />
-          </View>
-        </ScrollView>
+        {/* <NewHabitInputs 
+          hideHabitInput={hideHabitInput}
+          setNewHabit={setNewHabit}
+          clearText={clearText}
+          setSelectedToBuild={setSelectedToBuild}
+          setSelectedToQuit={setSelectedToQuit}
+          setSelectedToDaily={setSelectedToDaily}
+          setSelectedToWeekly={setSelectedToWeekly}
+          setSelectedToYearly={setSelectedToYearly}
+          setNameIsFocused={setNameIsFocused}
+          setNameNotFocused={setNameNotFocused}
+          setGroupIsFocused={setGroupIsFocused}
+          setGroupNotFocused={setGroupNotFocused}
+          getColorChoice={getColorChoice}
+          removeOrAddDay={removeOrAddDay}
+          habitName={habitName}
+          maxTextLength={maxTextLength}
+          buildOrQuit={buildOrQuit}
+          goalType={goalType}
+          daysToTrack={daysToTrack}
+          goalType={goalType}
+          goalTimes={goalTimes}
+          group={group}
+          selectedColor={selectedColor}
+          nameInputIsFocused={nameInputIsFocused}
+          groupInputIsFocused={groupInputIsFocused}
+          setNameInputIsFocused={setNameInputIsFocused}
+          setGroupInputIsFocused={setGroupInputIsFocused}
+          textLength={textLength}
+          setTextLength={setTextLength}
+          setHabitName={setHabitName}
+          habitName={habitName}
+          setGoalTimes={setGoalTimes}
+          goalTimes={goalTimes}
+        /> */}
+        <NewHabitInputProto 
+          habitName={habitName}
+          setTextLength={setTextLength}
+          setHabitName={setHabitName}
+          setNameIsFocused={setNameIsFocused}
+          setNameNotFocused={setNameNotFocused}
+          maxTextLength={maxTextLength}
+          nameInputIsFocused={nameInputIsFocused}
+          textLength={textLength}
+          clearText={clearText}
+          setNewHabit={setNewHabit}
+          hideHabitInput={hideHabitInput}
+        />
+      </Animated.View>
+      <Animated.View style={ styles.habitReviewContainer }>
+
       </Animated.View>
     </View>
   );
@@ -500,5 +340,8 @@ const styles = StyleSheet.create({
     },
     nav: {
       height: '15%'
+    },
+    habitReviewContainer: {
+      position: 'absolute'
     }
 });
