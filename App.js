@@ -4,10 +4,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
-//Screens
-import HomeScreen from './src/screens/HomeScreen';
-import StatsScreen from './src/screens/StatsScreen';
-import SettingsScreen from './src/screens/SettingsScreen';
+//Navs
+import UserNav from './src/navs/UserNav';
+import HomeNav from './src/navs/HomeNav';
+
 
 //Theme
 import { colors } from './theme/Variables'
@@ -18,34 +18,9 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen 
-            name="Home" 
-            component={ HomeScreen }
-            options={{
-              headerStyle: {
-                backgroundColor: colors.primary
-              }
-            }}
-          />
-          <Stack.Screen 
-            name="Stats" 
-            component={ StatsScreen }
-            options={{
-              headerStyle: {
-                backgroundColor: colors.primary
-              }
-            }}
-          />
-          <Stack.Screen 
-            name="Settings" 
-            component={ SettingsScreen }
-            options={{
-              headerStyle: {
-                backgroundColor: colors.primary
-              }
-            }}
-          />
+        <Stack.Navigator initialRouteName="UserNav">
+          <Stack.Screen name="UserNav" component={ UserNav } options={{ headerShown: false }}/>
+          <Stack.Screen name="HomeNav" component={ HomeNav } options={{ headerShown: false }}/>
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

@@ -163,7 +163,7 @@ const HomeScreen = () => {
         <BottomNav addCallback={ showHabitInput }/>
       </View>
       <Animated.View style={[ styles.inputsContainer, habitInputStyles, shadow ]}>
-        {/* <NewHabitInputs 
+        <NewHabitInputs 
           hideHabitInput={hideHabitInput}
           setNewHabit={setNewHabit}
           clearText={clearText}
@@ -197,8 +197,8 @@ const HomeScreen = () => {
           habitName={habitName}
           setGoalTimes={setGoalTimes}
           goalTimes={goalTimes}
-        /> */}
-        <NewHabitInputProto 
+        />
+        {/* <NewHabitInputProto 
           habitName={habitName}
           setTextLength={setTextLength}
           setHabitName={setHabitName}
@@ -210,7 +210,7 @@ const HomeScreen = () => {
           clearText={clearText}
           setNewHabit={setNewHabit}
           hideHabitInput={hideHabitInput}
-        />
+        /> */}
       </Animated.View>
       <Animated.View style={ styles.habitReviewContainer }>
 
