@@ -26,7 +26,7 @@ export default Button;
 
 const styles = StyleSheet.create({
     button: {
-        width: 60,
+        width: 120,
         aspectRatio: 2 / 1,
         backgroundColor: colors.primary,
         borderRadius: 8,

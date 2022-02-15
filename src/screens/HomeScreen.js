@@ -6,37 +6,32 @@ import Animated, {
   useAnimatedStyle
 } from 'react-native-reanimated';
 
-
-
 import { colors, shadow, sizes, fontSizes } from '../../theme/Variables';
 
 //Components
 import HabitContainer from '../components/HabitContainer';
-import NewHabitInputProto from '../components/NewHabitInputProto';
+import NewHabitInput from '../components/NewHabitInput';
 import BottomNav from '../components/BottomNav';
-import NewHabitInputs from '../components/NewHabitInputs';
 
 const windowHeight = Dimensions.get('window').height
 
 
-
 const HomeScreen = () => {
-  const [ habitName, setHabitName ] = useState('')
+  
   const [ inputIsShowing, setInputIsShowing ] = useState(false)
   const habitInputHeight = useSharedValue(windowHeight)
   const [ habitsList, setHabitsList ] = useState([])
-  const [ buildOrQuit, setBuildOrQuit ] = useState('Build')
-  const [ goalType, setGoalType ] = useState('day')
-  const [ goalTimes, setGoalTimes ] = useState()
-  const [ group, setGroup ] = useState('')
-  const [ daysToTrack, setDaysToTrack ] = useState([])
-  const [ color, setColor ] = useState()
-  const [ selectedColor, setSelectedColor ] = useState()
   const [ textLength, setTextLength ] = useState(20)
   const [ maxTextLength, setMaxTextLength ] = useState(20)
   const [ nameInputIsFocused, setNameInputIsFocused ] = useState(false)
-  const [ groupInputIsFocused, setGroupInputIsFocused ] = useState(false)
+  
+  //Habit Info
+  const [ habitName, setHabitName ] = useState('')
+  const [ habitChain, setHabitChain ] = useState([])
+  const [ habitTime, setHabitTime ] = useState()
+  const [ habitLength, setHabitLength ] = useState()
 
+  //Animations
   const transitionConfig = {
     duration: 200
   }
@@ -47,6 +42,7 @@ const HomeScreen = () => {
     }
   })
 
+  //Functions
   const showHabitInput = () => {
       habitInputHeight.value = windowHeight * .0
       setInputIsShowing(true)
@@ -56,10 +52,6 @@ const HomeScreen = () => {
     habitInputHeight.value = windowHeight
     setInputIsShowing(false)
     clearText()
-    setBuildOrQuit('Build')
-    setGoalType('day')
-    setGoalTimes('')
-    setDaysToTrack([])
   }
 
   const setNewHabit = () => {
@@ -67,45 +59,20 @@ const HomeScreen = () => {
       ...habitsList,
       {
         habitName: habitName,
-        habitType: buildOrQuit,
-        goalType: goalType,
-        goalFrequency: goalTimes,
-        group: group,
-        color: color,
-        daysToTrack: daysToTrack
+        habitChain: habitChain,
+        habitTime: habitTime,
+        habitLength: habitLength
+        
       }
     ])
     habitInputHeight.value = windowHeight
     setInputIsShowing(false)
     clearText()
-    setBuildOrQuit('Build')
-    setGoalType('day')
-    setGoalTimes('')
   }
 
   const clearText = () => {
     setHabitName('')
     setTextLength(20)
-  }
-
-  const setSelectedToBuild = () => {
-    setBuildOrQuit('Build')
-  }
-
-  const setSelectedToQuit = () => {
-    setBuildOrQuit('Quit')
-  }
-
-  const setSelectedToDaily = () => {
-    setGoalType('day')
-  }
-
-  const setSelectedToWeekly = () => {
-    setGoalType('week')
-  }
-
-  const setSelectedToYearly = () => {
-    setGoalType('year')
   }
 
   const setNameIsFocused = () => {
@@ -114,33 +81,6 @@ const HomeScreen = () => {
 
   const setNameNotFocused = () => {
     setNameInputIsFocused(false)
-  }
-
-  const setGroupIsFocused = () => {
-    setGroupInputIsFocused(true)
-  }
-
-  const setGroupNotFocused = () => {
-    setGroupInputIsFocused(false)
-  }
-
-  const getColorChoice = (color) => {
-    setColor(color)
-    setSelectedColor(color)
-  }
-
-  const removeOrAddDay = (day) => {
-    if(daysToTrack.includes(day)) {
-      const daysArray = daysToTrack.slice()
-      const index = daysArray.indexOf(day)
-      const newArray = daysArray.splice(index, 1)
-      setDaysToTrack(daysArray)
-    } else {
-      setDaysToTrack([
-        ...daysToTrack,
-        day
-      ]) 
-    }
   }
 
   return (
@@ -154,63 +94,29 @@ const HomeScreen = () => {
         keyExtractor={item => item.habitName}
         contentContainerStyle={{ marginVertical: '10%' }}
       />
-      {/* <View style={ styles.addHabitButton }>
-        <AddHabitButton 
-          callback={ showHabitInput }
-        />
-      </View> */}
       <View style={ styles.nav }>
         <BottomNav addCallback={ showHabitInput }/>
       </View>
       <Animated.View style={[ styles.inputsContainer, habitInputStyles, shadow ]}>
-        <NewHabitInputs 
-          hideHabitInput={hideHabitInput}
-          setNewHabit={setNewHabit}
-          clearText={clearText}
-          setSelectedToBuild={setSelectedToBuild}
-          setSelectedToQuit={setSelectedToQuit}
-          setSelectedToDaily={setSelectedToDaily}
-          setSelectedToWeekly={setSelectedToWeekly}
-          setSelectedToYearly={setSelectedToYearly}
-          setNameIsFocused={setNameIsFocused}
-          setNameNotFocused={setNameNotFocused}
-          setGroupIsFocused={setGroupIsFocused}
-          setGroupNotFocused={setGroupNotFocused}
-          getColorChoice={getColorChoice}
-          removeOrAddDay={removeOrAddDay}
+        <NewHabitInput
           habitName={habitName}
-          maxTextLength={maxTextLength}
-          buildOrQuit={buildOrQuit}
-          goalType={goalType}
-          daysToTrack={daysToTrack}
-          goalType={goalType}
-          goalTimes={goalTimes}
-          group={group}
-          selectedColor={selectedColor}
-          nameInputIsFocused={nameInputIsFocused}
-          groupInputIsFocused={groupInputIsFocused}
-          setNameInputIsFocused={setNameInputIsFocused}
-          setGroupInputIsFocused={setGroupInputIsFocused}
-          textLength={textLength}
           setTextLength={setTextLength}
           setHabitName={setHabitName}
-          habitName={habitName}
-          setGoalTimes={setGoalTimes}
-          goalTimes={goalTimes}
+          setNameIsFocused={setNameIsFocused}
+          setNameNotFocused={setNameNotFocused}
+          maxTextLength={maxTextLength}
+          nameInputIsFocused={nameInputIsFocused}
+          textLength={textLength}
+          clearText={clearText}
+          setNewHabit={setNewHabit}
+          hideHabitInput={hideHabitInput}
+          habitTime={habitTime}
+          setHabitTime={setHabitTime}
+          habitChain={habitChain}
+          setHabitChain={setHabitChain}
+          habitLength={habitLength}
+          setHabitLength={setHabitLength}
         />
-        {/* <NewHabitInputProto 
-          habitName={habitName}
-          setTextLength={setTextLength}
-          setHabitName={setHabitName}
-          setNameIsFocused={setNameIsFocused}
-          setNameNotFocused={setNameNotFocused}
-          maxTextLength={maxTextLength}
-          nameInputIsFocused={nameInputIsFocused}
-          textLength={textLength}
-          clearText={clearText}
-          setNewHabit={setNewHabit}
-          hideHabitInput={hideHabitInput}
-        /> */}
       </Animated.View>
       <Animated.View style={ styles.habitReviewContainer }>
 

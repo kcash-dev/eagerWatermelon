@@ -13,27 +13,19 @@ import PressableWrapper from './PressableWrapper';
 
 const HabitContainer = ({ item }) => {
     const [ completed, setCompleted ] = useState(0)
-    const [ goal, setGoal ] = useState(item.goalFrequency)
     const progressWidth = useSharedValue('0%')
-    const [ dailyGoal, setDailyGoal ] = useState()
-
-    // const setDailyGoal = () => {
-    //     if (item.goalType === 'day') {
-    //         setDailyGoal(item.goalFrequency)
-    //     } else if (item.goalType === 'week') {
-    //         setDailyGoal(item.goalFrequency / item.daysToTrack.length)
-    //     } else if (item.goalType === 'year') {}
-    // }
+    const color = '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')
 
     const onPress = () => {
-        if (completed < dailyGoal) {
+        if (completed < 1) {
             setCompleted(completed + 1)
         }
     }
 
     useEffect(() => {
-        const percentage = (completed / goal) * 100
-        progressWidth.value = `${percentage}%`
+        if (completed === 1) {
+            progressWidth.value = `100%`
+        }
     }, [ completed ])
 
     const transitionConfig = {
@@ -46,8 +38,6 @@ const HabitContainer = ({ item }) => {
         }
     })
 
-    console.log(item)
-
   return (
       <View style={{ marginVertical: 10 }}>
         <PressableWrapper
@@ -57,7 +47,7 @@ const HabitContainer = ({ item }) => {
                 <Animated.View 
                     style={[
                         { 
-                            backgroundColor: item.color, 
+                            backgroundColor: color, 
                             height: '100%', 
                             borderRadius: 8,
                             position: 'absolute' 
@@ -69,9 +59,9 @@ const HabitContainer = ({ item }) => {
                 </Animated.View>
                 <View style={ styles.innerTextContainer }>
                     <Text style={ styles.text }>{ item.habitName }</Text>
-                    <Text>{ item.goalType === 'day' ? `Today` : `This ${ item.goalType }` }: { completed }/{ goal }</Text>
+                    <Text>Today: { completed }/1</Text>
                 </View>
-                { completed === dailyGoal ?
+                { completed === 1 ?
                     <View style={[ styles.checkContainer ]}>
                         <MaterialCommunityIcons 
                             name="check-bold" 
