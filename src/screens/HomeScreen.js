@@ -29,6 +29,7 @@ const HomeScreen = () => {
   const [ habitName, setHabitName ] = useState('')
   const [ habitChain, setHabitChain ] = useState([])
   const [ habitTime, setHabitTime ] = useState()
+  const [ habitTimeOfDay, setHabitTimeOfDay ] = useState()
   const [ habitLength, setHabitLength ] = useState()
 
   //Animations
@@ -61,8 +62,8 @@ const HomeScreen = () => {
         habitName: habitName,
         habitChain: habitChain,
         habitTime: habitTime,
+        habitTimeOfDay: habitTimeOfDay,
         habitLength: habitLength
-        
       }
     ])
     habitInputHeight.value = windowHeight
@@ -112,6 +113,8 @@ const HomeScreen = () => {
           hideHabitInput={hideHabitInput}
           habitTime={habitTime}
           setHabitTime={setHabitTime}
+          habitTimeOfDay={habitTimeOfDay}
+          setHabitTimeOfDay={setHabitTimeOfDay}
           habitChain={habitChain}
           setHabitChain={setHabitChain}
           habitLength={habitLength}

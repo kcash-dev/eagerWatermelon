@@ -1,21 +1,22 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { FlatList, StyleSheet, Text, View } from 'react-native'
+import React, { useState } from 'react'
 import PressableWrapper from './PressableWrapper'
-import { sizes } from '../../theme/Variables'
+import { sizes, fontSizes } from '../../theme/Variables'
 
 const TimeSelectionButton = ({ callback, item }) => {
     const handleCallback = (time) => {
         callback(time)
     }
-  return (
-    <PressableWrapper
-        pressOut={() => handleCallback(item.time)}
-    >
-        <View style={[ styles.timeSelectionContainer, { backgroundColor: item.color } ]}>
-            <Text>{ item.time }</Text>
-        </View>
-    </PressableWrapper>
-  )
+    const [ showTimes, setShowTimes ] = useState(false)
+    return (
+        <PressableWrapper
+            pressOut={() => handleCallback(item.time)}
+        >
+            <View style={[ styles.timeSelectionContainer, { backgroundColor: item.color } ]}>
+                <Text style={ styles.text }>{ item.time }</Text>
+            </View>
+        </PressableWrapper>
+    )
 }
 
 export default TimeSelectionButton
@@ -28,5 +29,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginVertical: sizes.sm
+    },
+    text: {
+        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        fontSize: fontSizes.md,
+        padding: 3
     }
 })
