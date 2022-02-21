@@ -10,7 +10,7 @@ const TimeSelectionButton = ({ callback, item }) => {
     const [ showTimes, setShowTimes ] = useState(false)
     return (
         <PressableWrapper
-            pressOut={() => handleCallback(item.time)}
+            pressOut={() => handleCallback(item)}
         >
             <View style={[ styles.timeSelectionContainer, { backgroundColor: item.color } ]}>
                 <Text style={ styles.text }>{ item.time }</Text>

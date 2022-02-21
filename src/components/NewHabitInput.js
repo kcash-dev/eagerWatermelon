@@ -257,7 +257,7 @@ const NewHabitInput = ({
     finishedSentencePosition.value = 0
   }
 
-
+  console.log(habitTime, 'habittime')
   return (
     <View style={ styles.container }>
       <Animated.View 
@@ -333,11 +333,15 @@ const NewHabitInput = ({
       >
         <Text>Choose a time:</Text>
         <FlatList 
-          data={ habitTime }
+          data={ habitTime.timeSchedules }
           renderItem={({ item }) => (
-            <PressableWrapper>
-              <Text>{ item.timeSchedules }</Text>
-            </PressableWrapper>
+            <View style={ styles.timeSchedule }>
+              <PressableWrapper
+                pressOut={() => habitTimeOfDayPress(item) }
+              >
+                <Text style={ styles.timeScheduleText }>{ item }</Text>
+              </PressableWrapper>
+            </View>
           )}
           keyExtractor={item => item}
           numColumns={ 4 }
@@ -388,7 +392,7 @@ const NewHabitInput = ({
           entering={FadeIn.delay(300)}
           layout={Layout.springify()}
         >
-            After I <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitChain.name?.toUpperCase() }</Text>, I will <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitName?.toUpperCase() }</Text> for <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitLength?.toUpperCase() }</Text> every <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitTime?.toUpperCase() }</Text>.
+            After I <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitChain.name?.toUpperCase() }</Text> at <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitTimeOfDay }</Text>, I will <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitName?.toUpperCase() }</Text> for <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitLength?.toUpperCase() }</Text> every <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitTime?.time.toUpperCase() }</Text>.
         </Animated.Text>
         <View style={ styles.button }>
           <Button 
@@ -479,4 +483,14 @@ const styles = StyleSheet.create({
         width: '100%',
         marginVertical: sizes.xxl
       },
+      timeSchedule: {
+        width: '25%',
+        alignItems: 'center',
+        justifyContent: 'center'
+      },
+      timeScheduleText: {
+        paddingVertical: sizes.sm,
+        fontSize: fontSizes.md,
+        textAlign: 'center'
+      }
 })

@@ -1,4 +1,4 @@
-import { StyleSheet, FlatList, View, TextInput, Dimensions, Text, Keyboard } from 'react-native';
+import { StyleSheet, FlatList, View, Dimensions, Text } from 'react-native';
 import React, { useState } from 'react';
 import Animated, {
   useSharedValue,
