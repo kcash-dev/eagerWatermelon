@@ -14,17 +14,17 @@ const OtherHabitsChoices = ({ item, callback }) => {
         <PressableWrapper
             pressOut={() => handleCallback(item)}
         >
-                <View style={ styles.container }>
-                    <ImageBackground
-                        source={{ uri: item.picture }}
-                        style={[ { width: '100%', height: '100%', borderRadius: 8 }, styles.imageBackground ]}
-                        resizeMode='cover'
-                        imageStyle={{ borderRadius: 8 }}
-                    >
-                        <View style={[styles.overlay, { backgroundColor: item.backgroundColor } ]} />
-                        <Text style={ styles.titleText }>{ item.name }</Text>
-                    </ImageBackground>
-                </View>
+            <View style={ styles.container }>
+                <ImageBackground
+                    source={{ uri: item.picture }}
+                    style={[ { width: '100%', height: '100%', borderRadius: 8 }, styles.imageBackground ]}
+                    resizeMode='cover'
+                    imageStyle={{ borderRadius: 8 }}
+                >
+                    <View style={[styles.overlay, { backgroundColor: item.backgroundColor } ]} />
+                    <Text style={ styles.titleText }>{ item.name }</Text>
+                </ImageBackground>
+            </View>
         </PressableWrapper>
       </View>
   )

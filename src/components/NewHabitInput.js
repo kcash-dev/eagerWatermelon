@@ -15,6 +15,8 @@ import Animated, {
 import PressableWrapper from './PressableWrapper'
 import Button from './Button';
 import LengthButton from './LengthButton';
+import BackButton from './BackButton';
+import CloseButton from './CloseButton';
 
 //Theme
 import { fontSizes, shadow, colors, sizes } from '../../theme/Variables'
@@ -59,6 +61,11 @@ const NewHabitInput = ({
       picture: 'https://i.imgur.com/wGiEPpz.jpg'
     },
     {
+      name: 'Get Dressed',
+      backgroundColor: 'rgba(0, 99, 12, 0.8)',
+      picture: 'https://i.imgur.com/faW6eaG.jpg'
+    },
+    {
       name: 'Eat Breakfast',
       backgroundColor: 'rgba(144, 112, 140, .8)',
       picture: 'https://i.imgur.com/VEJnC01.jpg'
@@ -72,6 +79,11 @@ const NewHabitInput = ({
       name: 'Eat Lunch',
       backgroundColor: 'rgba(144, 41, 35, .8)',
       picture: 'https://i.imgur.com/avNhtgR.jpg'
+    },
+    {
+      name: 'Get Home',
+      backgroundColor: 'rgba(245, 146, 39, 0.8)',
+      picture: 'https://i.imgur.com/Zr83OFY.jpg'
     },
     {
       name: 'Eat Dinner',
@@ -118,7 +130,6 @@ const NewHabitInput = ({
       timeSchedules: [
         '6:00pm', '6:15pm', '6:30pm', '6:45pm',
         '7:00pm', '7:15pm', '7:30pm', '7:45pm',
-        '8:00pm', '8:15pm', '8:30pm', '8:45pm',
         '8:00pm', '8:15pm', '8:30pm', '8:45pm',
       ]
     },
@@ -211,8 +222,22 @@ const NewHabitInput = ({
     }
   })
 
+  const habitNamePress = () => {
+    if (habitName) {
+      namePosition.value = -500
+      timePosition.value = 0
+      timeOfDayPosition.value = 500
+      otherHabitPosition.value = 1000
+      habitLengthPosition.value = 1500
+      finishedSentencePosition.value = 2000
+    } else {
+      Alert.alert('You need to enter a habit name.')
+    }
+  }
+
   const habitTimePress = (time) => {
     setHabitTime(time)
+    namePosition.value = -1000
     timePosition.value = -500
     timeOfDayPosition.value = 0
     otherHabitPosition.value = 500
@@ -222,6 +247,7 @@ const NewHabitInput = ({
 
   const habitTimeOfDayPress = (time) => {
     setHabitTimeOfDay(time)
+    namePosition.value = -1500
     timePosition.value = -1000
     timeOfDayPosition.value = -500
     otherHabitPosition.value = 0
@@ -231,6 +257,7 @@ const NewHabitInput = ({
 
   const habitChainPress = (habit) => {
     setHabitChain(habit)
+    namePosition.value = -2000
     timePosition.value = -1500
     timeOfDayPosition.value = -1000
     otherHabitPosition.value = -500
@@ -250,6 +277,7 @@ const NewHabitInput = ({
 
   const habitLengthPress = (length) => {
     setHabitLength(length)
+    namePosition.value = -2500
     timePosition.value = -2000
     timeOfDayPosition.value = -1500
     otherHabitPosition.value = -1000
@@ -257,7 +285,42 @@ const NewHabitInput = ({
     finishedSentencePosition.value = 0
   }
 
-  console.log(habitTime, 'habittime')
+  const setChoicesToBeginning = () => {
+    hideHabitInput()
+    namePosition.value = 0
+    timePosition.value = 500
+    timeOfDayPosition.value = 1000
+    otherHabitPosition.value = 1500
+    habitLengthPosition.value = 2000
+    finishedSentencePosition.value = 2500
+  }
+
+  const submitAndReset = () => {
+    setNewHabit()
+    namePosition.value = 0
+    timePosition.value = 500
+    timeOfDayPosition.value = 1000
+    otherHabitPosition.value = 1500
+    habitLengthPosition.value = 2000
+    finishedSentencePosition.value = 2500
+  }
+
+  const handleBackPress = (
+    first, 
+    second, 
+    third, 
+    fourth, 
+    fifth, 
+    sixth,
+    ) => {
+    first.value = first.value + 500
+    second.value = second.value + 500
+    third.value = third.value + 500
+    fourth.value = fourth.value + 500
+    fifth.value = fifth.value + 500
+    sixth.value = sixth.value + 500
+  }
+
   return (
     <View style={ styles.container }>
       <Animated.View 
@@ -296,15 +359,7 @@ const NewHabitInput = ({
         </View>
         <View style={ styles.textContainer }>
           <PressableWrapper
-            pressOut={() => {
-              if (habitName) {
-                namePosition.value = -500
-                timePosition.value = 0
-                otherHabitPosition.value = 500
-              } else {
-                Alert.alert('You need to enter a habit name.')
-              }
-            }}
+            pressOut={habitNamePress}
           >
             <Text style={ styles.text }>Next</Text>
           </PressableWrapper>
@@ -314,7 +369,6 @@ const NewHabitInput = ({
         style={[ styles.timeContainer, shadow, timeStyles ]}
         exiting={SlideOutLeft}
         entering={SlideInLeft}
-        layout={Layout.springify()}
       >
         <Text>When would you like to { habitName.toLowerCase() }?</Text>
         <FlatList 
@@ -326,14 +380,13 @@ const NewHabitInput = ({
         />
       </Animated.View>
       <Animated.View 
-        style={[ styles.timeContainer, shadow, timeOfDayStyles ]}
+        style={[ styles.timeContainer, timeOfDayStyles ]}
         exiting={SlideOutLeft}
         entering={SlideInLeft}
-        layout={Layout.springify()}
       >
-        <Text>Choose a time:</Text>
+        <Text style={ styles.text }>Choose a time:</Text>
         <FlatList 
-          data={ habitTime.timeSchedules }
+          data={ habitTime?.timeSchedules }
           renderItem={({ item }) => (
             <View style={ styles.timeSchedule }>
               <PressableWrapper
@@ -345,15 +398,15 @@ const NewHabitInput = ({
           )}
           keyExtractor={item => item}
           numColumns={ 4 }
+          scrollEnabled={ false }
         />
       </Animated.View>
       <Animated.View 
         style={[ styles.animatedViewsContainer, otherHabitStyles ]}
         exiting={SlideOutLeft}
         entering={SlideInLeft}
-        layout={Layout.springify()}
       >
-        <Text style={ styles.text }>Let's chain this to an existing habit. Pick one.</Text>
+        <Text style={[ styles.text, { marginTop: sizes.xxxl } ]}>Let's chain this to an existing habit. Pick one.</Text>
         <FlatList 
           data={ choices }
           renderItem={({ item }) => (
@@ -361,15 +414,15 @@ const NewHabitInput = ({
           )}
           keyExtractor={item => item.name}
           numColumns={2}
+          showsVerticalScrollIndicator={false}
         />
       </Animated.View>
       <Animated.View 
         style={[ styles.animatedViewsContainer, habitLengthStyles ]}
         exiting={SlideOutLeft}
         entering={SlideInLeft}
-        layout={Layout.springify()}
       >
-        <Text style={ styles.text }>How long do you want to { habitName.toLowerCase() } after you { habitChain.name?.toLowerCase() }?</Text>
+        <Text style={[ styles.text, { marginTop: sizes.xxxl } ]}>How long do you want to { habitName.toLowerCase() } after you { habitChain.name?.toLowerCase() }?</Text>
         <FlatList 
           data={ lengths }
           renderItem={({ item }) => (
@@ -399,10 +452,26 @@ const NewHabitInput = ({
             title="Sounds good."
             bgColor={ colors.primary }
             textColor={ colors.secondary }
-            callback={ setNewHabit }
+            callback={ submitAndReset }
           />
         </View>
       </Animated.View>
+      <View style={ styles.closeButton }>
+        <CloseButton 
+          callback={ setChoicesToBeginning }
+        />
+      </View>
+      <View style={ styles.backButton }>
+          { habitName ? 
+            <BackButton 
+              callback={ () => 
+                handleBackPress(namePosition, timePosition, timeOfDayPosition, otherHabitPosition, habitLengthPosition, finishedSentencePosition) 
+              }
+            />
+            :
+            null
+          }
+      </View>
     </View>
     
   )
@@ -486,11 +555,22 @@ const styles = StyleSheet.create({
       timeSchedule: {
         width: '25%',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        borderWidth: 1
       },
       timeScheduleText: {
         paddingVertical: sizes.sm,
         fontSize: fontSizes.md,
         textAlign: 'center'
+      },
+      closeButton: {
+        position: 'absolute',
+        top: '2%',
+        right: '1%'
+      },
+      backButton: {
+        position: 'absolute',
+        top: '2%',
+        left: '1%'
       }
 })

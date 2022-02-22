@@ -11,6 +11,7 @@ import { colors, shadow, sizes, fontSizes } from '../../theme/Variables';
 //Components
 import HabitContainer from '../components/HabitContainer';
 import NewHabitInput from '../components/NewHabitInput';
+import UpcomingHabit from '../components/UpcomingHabit';
 import BottomNav from '../components/BottomNav';
 
 const windowHeight = Dimensions.get('window').height
@@ -24,6 +25,7 @@ const HomeScreen = () => {
   const [ textLength, setTextLength ] = useState(20)
   const [ maxTextLength, setMaxTextLength ] = useState(20)
   const [ nameInputIsFocused, setNameInputIsFocused ] = useState(false)
+  const [ habitUpcoming, setHabitUpcoming ] = useState(false)
   
   //Habit Info
   const [ habitName, setHabitName ] = useState('')
@@ -53,6 +55,7 @@ const HomeScreen = () => {
     habitInputHeight.value = windowHeight
     setInputIsShowing(false)
     clearText()
+    resetAllInputs()
   }
 
   const setNewHabit = () => {
@@ -69,11 +72,19 @@ const HomeScreen = () => {
     habitInputHeight.value = windowHeight
     setInputIsShowing(false)
     clearText()
+    resetAllInputs()
   }
 
   const clearText = () => {
     setHabitName('')
     setTextLength(20)
+  }
+
+  const resetAllInputs = () => {
+    clearText()
+    setHabitChain([])
+    setHabitTime()
+    setHabitTimeOfDay()
   }
 
   const setNameIsFocused = () => {
@@ -86,15 +97,25 @@ const HomeScreen = () => {
 
   return (
     <View style={ styles.container }>
-      <View style={ styles.homeHeader }>
-        <Text style={ styles.homeHeaderText }>Done</Text>
-      </View>
-      <FlatList 
-        data={ habitsList }
-        renderItem={({ item }) => <HabitContainer item={ item } />}
-        keyExtractor={item => item.habitName}
-        contentContainerStyle={{ marginVertical: '10%' }}
-      />
+     { habitUpcoming ? 
+          <View>
+            <UpcomingHabit 
+              habitsList={habitsList}
+            />
+          </View>
+         :
+          <View style={{ flex: 1 }}>
+            <View style={ styles.homeHeader }>
+                <Text style={ styles.homeHeaderText }>Done</Text>
+              </View>
+              <FlatList 
+                data={ habitsList }
+                renderItem={({ item }) => <HabitContainer item={ item } />}
+                keyExtractor={item => item.habitName}
+                contentContainerStyle={{ marginVertical: '10%' }}
+              />
+          </View>
+      }
       <View style={ styles.nav }>
         <BottomNav addCallback={ showHabitInput }/>
       </View>
@@ -120,9 +141,6 @@ const HomeScreen = () => {
           habitLength={habitLength}
           setHabitLength={setHabitLength}
         />
-      </Animated.View>
-      <Animated.View style={ styles.habitReviewContainer }>
-
       </Animated.View>
     </View>
   );
