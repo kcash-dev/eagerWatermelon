@@ -1,5 +1,5 @@
 import { StyleSheet, FlatList, View, Dimensions, Text } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Animated, {
   useSharedValue,
   withTiming,
@@ -33,6 +33,40 @@ const HomeScreen = () => {
   const [ habitTime, setHabitTime ] = useState()
   const [ habitTimeOfDay, setHabitTimeOfDay ] = useState()
   const [ habitLength, setHabitLength ] = useState()
+
+  //Time Info
+  const [ currentTime, setCurrentTime ] = useState()
+  const [ habitTimesCollection, setHabitTimesCollection ] = useState([])
+  const [ differenceInTime, setDifferenceInTime ] = useState()
+
+  useEffect(() => {
+    setInterval(() => {
+      setCurrentTime(new Date().toLocaleString())
+      let diff = Math.abs(new Date() - habitTimesCollection)
+      setDifferenceInTime(diff)
+    }, 1000)
+  }, [])
+
+  useEffect(() => {
+    getExistingHabitTimes(habitsList)
+  }, [ habitsList ])
+
+
+  const getExistingHabitTimes = (list) => {
+    for(let i = 0; i < list.length; i++) {
+      const time = list[i].habitTimeOfDay
+      let now = new Date();
+      let nowDateTime = now.toISOString();
+      let nowDate = nowDateTime.split('T');
+      let hms = time;
+      let combinedTime = nowDate[0] + 'T' + hms + 'Z'
+      var target = new Date(combinedTime);
+      setHabitTimesCollection([
+        ...habitTimesCollection,
+        target
+      ])
+    }
+  }
 
   //Animations
   const transitionConfig = {
@@ -106,14 +140,20 @@ const HomeScreen = () => {
          :
           <View style={{ flex: 1 }}>
             <View style={ styles.homeHeader }>
-                <Text style={ styles.homeHeaderText }>Done</Text>
-              </View>
+              <Text style={ styles.homeHeaderText }>Done</Text>
+            </View>
+            <View style={ styles.timeContainer }>
+              <Text style={ styles.timeText }>{ currentTime }</Text>
+              <Text style={ styles.timeText }>{ Math.floor(differenceInTime / 60000) + ':' + ((differenceInTime % 60000) / 1000).toFixed(0) }</Text>
+            </View>
+            <View style={ styles.habitsList }>
               <FlatList 
                 data={ habitsList }
                 renderItem={({ item }) => <HabitContainer item={ item } />}
                 keyExtractor={item => item.habitName}
                 contentContainerStyle={{ marginVertical: '10%' }}
               />
+            </View>
           </View>
       }
       <View style={ styles.nav }>
@@ -270,5 +310,17 @@ const styles = StyleSheet.create({
     },
     habitReviewContainer: {
       position: 'absolute'
+    },
+    habitsList: {
+      width: '100%',
+      height: '60%'
+    },
+    timeContainer: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '10%'
+    },
+    timeText: {
+      fontSize: fontSizes.md
     }
 });

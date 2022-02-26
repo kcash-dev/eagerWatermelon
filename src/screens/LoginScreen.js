@@ -24,7 +24,6 @@ const LoginScreen = () => {
   }, [])
 
   const signIn = async () => {
-    console.log('fired!', email, password)
     signInWithEmailAndPassword(auth, email, password)
         .then((userCredentials) => {
             const user = userCredentials.user

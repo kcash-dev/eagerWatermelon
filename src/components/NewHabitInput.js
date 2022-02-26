@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TextInput, FlatList, Alert } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Animated, {
   Layout,
@@ -182,6 +182,8 @@ const NewHabitInput = ({
   const habitLengthPosition = useSharedValue(2000)
   const finishedSentencePosition = useSharedValue(2500)
 
+  const [ showBack, setShowBack ] = useState(false)
+
   const transitionConfig = {
     duration: 200
   }
@@ -246,7 +248,15 @@ const NewHabitInput = ({
   }
 
   const habitTimeOfDayPress = (time) => {
-    setHabitTimeOfDay(time)
+    const updatedTime = time.slice(0, time.length - 2)
+    let finalTime;
+    if (updatedTime[0] === '0') {
+      finalTime = `${updatedTime}:00`
+    } else {
+      finalTime = `0${updatedTime}:00`
+    }
+
+    setHabitTimeOfDay(finalTime)
     namePosition.value = -1500
     timePosition.value = -1000
     timeOfDayPosition.value = -500
@@ -319,6 +329,11 @@ const NewHabitInput = ({
     fourth.value = fourth.value + 500
     fifth.value = fifth.value + 500
     sixth.value = sixth.value + 500
+
+    if(first.value + 500 === 0) {
+      setShowBack(false)
+    }
+
   }
 
   return (
@@ -359,7 +374,10 @@ const NewHabitInput = ({
         </View>
         <View style={ styles.textContainer }>
           <PressableWrapper
-            pressOut={habitNamePress}
+            pressOut={() => {
+              habitNamePress()
+              setShowBack(true)
+            }}
           >
             <Text style={ styles.text }>Next</Text>
           </PressableWrapper>
@@ -462,7 +480,7 @@ const NewHabitInput = ({
         />
       </View>
       <View style={ styles.backButton }>
-          { habitName ? 
+          { showBack ? 
             <BackButton 
               callback={ () => 
                 handleBackPress(namePosition, timePosition, timeOfDayPosition, otherHabitPosition, habitLengthPosition, finishedSentencePosition) 

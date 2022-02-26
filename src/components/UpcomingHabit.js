@@ -5,7 +5,6 @@ import React from 'react'
 import { colors, fontSizes } from '../../theme/Variables'
 
 const UpcomingHabit = ({ habitsList }) => {
-    console.log(habitsList, "habitsList")
     return (
         <View>
             <View style={ styles.initialHabit }>
