@@ -5,6 +5,7 @@ import Animated, {
   withTiming,
   useAnimatedStyle
 } from 'react-native-reanimated';
+import moment from "moment";
 
 import { colors, shadow, sizes, fontSizes } from '../../theme/Variables';
 
@@ -42,8 +43,8 @@ const HomeScreen = () => {
   useEffect(() => {
     setInterval(() => {
       setCurrentTime(new Date().toLocaleString())
-      let diff = Math.abs(new Date() - habitTimesCollection)
-      setDifferenceInTime(diff)
+      const fromNow = moment(habitTimesCollection).fromNow();
+      setDifferenceInTime(fromNow)
     }, 1000)
   }, [])
 
@@ -55,19 +56,18 @@ const HomeScreen = () => {
   const getExistingHabitTimes = (list) => {
     for(let i = 0; i < list.length; i++) {
       const time = list[i].habitTimeOfDay
-      let now = new Date();
-      let nowDateTime = now.toISOString();
-      let nowDate = nowDateTime.split('T');
-      let hms = time;
-      let combinedTime = nowDate[0] + 'T' + hms + 'Z'
-      var target = new Date(combinedTime);
+      let now = ([ moment().format('MMMM Do YYYY, h:mm:ss a') ])
+      let hms = moment().format('MMMM Do YYYY') + ',' + time
       setHabitTimesCollection([
         ...habitTimesCollection,
-        target
+        hms
       ])
     }
   }
 
+  
+  
+  console.log(habitTimesCollection)
   //Animations
   const transitionConfig = {
     duration: 200
@@ -144,7 +144,11 @@ const HomeScreen = () => {
             </View>
             <View style={ styles.timeContainer }>
               <Text style={ styles.timeText }>{ currentTime }</Text>
-              <Text style={ styles.timeText }>{ Math.floor(differenceInTime / 60000) + ':' + ((differenceInTime % 60000) / 1000).toFixed(0) }</Text>
+              { habitsList.length > 0 ?
+                <Text style={ styles.timeText }></Text>
+                :
+                null
+              }
             </View>
             <View style={ styles.habitsList }>
               <FlatList 
