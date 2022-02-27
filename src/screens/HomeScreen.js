@@ -42,9 +42,14 @@ const HomeScreen = () => {
 
   useEffect(() => {
     setInterval(() => {
-      setCurrentTime(new Date().toLocaleString())
-      const fromNow = moment(habitTimesCollection).fromNow();
-      setDifferenceInTime(fromNow)
+      const now = moment().format('MMMM Do YYYY, h:mm:ss a')
+      setCurrentTime(now)
+      if (habitTimesCollection.length > 0) {
+        const timeNow = moment(moment().format())
+        const habitTime = moment(moment(habitTimesCollection[0]).format())
+        const diff = timeNow.to(habitTime)
+        setDifferenceInTime(diff)
+      }
     }, 1000)
   }, [])
 
@@ -52,12 +57,11 @@ const HomeScreen = () => {
     getExistingHabitTimes(habitsList)
   }, [ habitsList ])
 
-
+  console.log(habitTimesCollection)
   const getExistingHabitTimes = (list) => {
     for(let i = 0; i < list.length; i++) {
       const time = list[i].habitTimeOfDay
-      let now = ([ moment().format('MMMM Do YYYY, h:mm:ss a') ])
-      let hms = moment().format('MMMM Do YYYY') + ',' + time
+      let hms = moment().format('YYYY-MM-DD') + ' ' + time
       setHabitTimesCollection([
         ...habitTimesCollection,
         hms
@@ -66,8 +70,7 @@ const HomeScreen = () => {
   }
 
   
-  
-  console.log(habitTimesCollection)
+
   //Animations
   const transitionConfig = {
     duration: 200
@@ -129,6 +132,8 @@ const HomeScreen = () => {
     setNameInputIsFocused(false)
   }
 
+  console.log(habitsList)
+
   return (
     <View style={ styles.container }>
      { habitUpcoming ? 
@@ -145,7 +150,9 @@ const HomeScreen = () => {
             <View style={ styles.timeContainer }>
               <Text style={ styles.timeText }>{ currentTime }</Text>
               { habitsList.length > 0 ?
-                <Text style={ styles.timeText }></Text>
+                <View style={ styles.timeUntilContainer }>
+                  <Text style={ styles.timeText }>You will {habitsList[0].habitChain.name.toLowerCase()} then { habitsList[0].habitName.toLowerCase() } { differenceInTime }</Text>
+                </View>
                 :
                 null
               }
@@ -326,5 +333,8 @@ const styles = StyleSheet.create({
     },
     timeText: {
       fontSize: fontSizes.md
+    },
+    timeUntilContainer: {
+      marginVertical: sizes.md
     }
 });

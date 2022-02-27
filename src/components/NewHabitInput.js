@@ -249,13 +249,12 @@ const NewHabitInput = ({
 
   const habitTimeOfDayPress = (time) => {
     const updatedTime = time.slice(0, time.length - 2)
-    const slicedLetter = time.slice(time.length - 2, time.length - 1)
-    console.log(slicedLetter, "LETTER")
+    const slicedTime = time.slice(0, 2)
     let finalTime;
-    if (updatedTime[0] === '0') {
-      finalTime = `${updatedTime}:00${slicedLetter}`
+    if (slicedTime === '10' || slicedTime === '11' || slicedTime === '12') {
+      finalTime = `${updatedTime}:00`
     } else {
-      finalTime = `0${updatedTime}:00${slicedLetter}`
+      finalTime = `0${updatedTime}:00`
     }
 
     setHabitTimeOfDay(finalTime)
