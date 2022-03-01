@@ -1,23 +1,29 @@
 import { ImageBackground, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import Carousel from 'react-native-snap-carousel';
 
 //Theme
-import { colors, fontSizes } from '../../theme/Variables'
+import { colors, fontSizes, sizes } from '../../theme/Variables'
 
 const UpcomingHabit = ({ habitsList }) => {
+    console.log(habitsList, "LIST")
     return (
         <View>
-            <View style={ styles.initialHabit }>
-                <ImageBackground 
-                    source={{ uri: habitsList[0].habitChain.picture }}
-                    style={[ styles.imageBackground, { width: '100%', height: '100%' }]}
-                    resizeMode='cover'
-                    imageStyle={{ borderRadius: 8 }}
-                >
-                    <View style={[styles.overlay, { backgroundColor: habitsList[0].habitChain.backgroundColor } ]} />
-                    <Text style={ styles.titleText }>{ habitsList[0].habitChain.name }</Text>
-                </ImageBackground>
-            </View>
+            { habitsList?.length > 0 ?
+                <View style={ styles.initialHabit }>
+                    <ImageBackground 
+                        source={{ uri: habitsList[0].habitChain.picture }}
+                        style={[ styles.imageBackground, { width: '100%', height: '100%' }]}
+                        resizeMode='cover'
+                        imageStyle={{ borderRadius: 8 }}
+                    >
+                        <View style={[styles.overlay, { backgroundColor: habitsList[0].habitChain.backgroundColor } ]} />
+                        <Text style={ styles.titleText }>{ habitsList[0].habitChain.name }</Text>
+                    </ImageBackground>
+                </View>
+                :
+                null
+            }
         </View>
     )
 }
@@ -32,7 +38,8 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         alignSelf: 'center',
         alignContent: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        marginTop: sizes.xl
     },
     overlay: {
         ...StyleSheet.absoluteFillObject,

@@ -27,6 +27,7 @@ const HomeScreen = () => {
   const [ maxTextLength, setMaxTextLength ] = useState(20)
   const [ nameInputIsFocused, setNameInputIsFocused ] = useState(false)
   const [ habitUpcoming, setHabitUpcoming ] = useState(false)
+  const [ upcomingHabitObj, setUpcomingHabitObj ] = useState([])
   
   //Habit Info
   const [ habitName, setHabitName ] = useState('')
@@ -47,11 +48,46 @@ const HomeScreen = () => {
       if (habitTimesCollection.length > 0) {
         const timeNow = moment(moment().format())
         const habitTime = moment(moment(habitTimesCollection[0]).format())
-        const diff = timeNow.to(habitTime)
-        setDifferenceInTime(diff)
+        const timeDifferenceMs = habitTime.diff(timeNow)
+        if(timeDifferenceMs < 0) {
+          const habitTimeTomorrow = moment(habitTime).add(1, 'd')
+          const tomorrowDifference = timeNow.to(habitTimeTomorrow)
+          setDifferenceInTime(tomorrowDifference)
+          
+          const timeTilHabit = habitTimeTomorrow.diff(timeNow)
+          if(timeTilHabit < 900000) {
+            setHabitUpcoming(true)
+            const upcomingHabits = findUpcomingHabits()
+            setUpcomingHabitObj([{
+              upcomingHabits
+            }])
+          } else if (timeTilHabit < -900000) {
+            setHabitUpcoming(false)
+          }
+
+        } else {
+          const diff = timeNow.to(habitTime)
+          if(diff < 900000) {
+            setHabitUpcoming(true)
+            const upcomingHabits = findUpcomingHabits()
+            setUpcomingHabitObj([{
+              upcomingHabits
+            }])
+          }
+          setDifferenceInTime(diff)
+        }
       }
     }, 1000)
   }, [])
+
+  const findUpcomingHabits = habitsList.filter(habit => {
+    const habitTime = moment(moment(habit.habitTimeOfDay).format())
+    const timeNow = moment(moment().format())
+    const timeDifferenceMs = timeNow.to(habitTime)
+    if (timeDifferenceMs < 900000) {
+      return habit
+    }
+  })
 
   useEffect(() => {
     getExistingHabitTimes(habitsList)
@@ -132,14 +168,12 @@ const HomeScreen = () => {
     setNameInputIsFocused(false)
   }
 
-  console.log(habitsList)
-
   return (
     <View style={ styles.container }>
      { habitUpcoming ? 
           <View>
             <UpcomingHabit 
-              habitsList={habitsList}
+              habitsList={upcomingHabitObj}
             />
           </View>
          :
@@ -151,7 +185,7 @@ const HomeScreen = () => {
               <Text style={ styles.timeText }>{ currentTime }</Text>
               { habitsList.length > 0 ?
                 <View style={ styles.timeUntilContainer }>
-                  <Text style={ styles.timeText }>You will {habitsList[0].habitChain.name.toLowerCase()} then { habitsList[0].habitName.toLowerCase() } { differenceInTime }</Text>
+                  <Text style={ styles.timeText }>You will {habitsList[0]?.habitChain.name.toLowerCase()} then { habitsList[0].habitName.toLowerCase() } { differenceInTime }</Text>
                 </View>
                 :
                 null
