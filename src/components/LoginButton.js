@@ -31,7 +31,8 @@ const styles = StyleSheet.create({
         backgroundColor: colors.primary,
         borderRadius: 8,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        alignSelf: 'center'
     },
     text: {
         fontSize: fontSizes.sm,

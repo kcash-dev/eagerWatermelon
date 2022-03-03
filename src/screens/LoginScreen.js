@@ -59,18 +59,22 @@ const LoginScreen = () => {
         />
       </View>
       <View style={ styles.buttonContainer }>
-        <LoginButton 
-          title='Login'
-          bgColor={ colors.primary }
-          textColor={ colors.secondary }
-          callback={signIn}
-        />
-        <LoginButton 
-          title='Register'
-          bgColor={ colors.invalid }
-          textColor={ colors.black }
-          callback={() => navigation.navigate('RegisterScreen')}
-        />
+        <View style={ styles.button }>
+          <LoginButton 
+            title='Login'
+            bgColor={ colors.primary }
+            textColor={ colors.secondary }
+            callback={signIn}
+          />
+        </View>
+        <View style={ styles.button }>
+          <LoginButton 
+            title='Register'
+            bgColor={ colors.invalid }
+            textColor={ colors.black }
+            callback={() => navigation.navigate('RegisterScreen')}
+          />
+        </View>
       </View>
     </KeyboardAvoidingView>
   )
@@ -94,5 +98,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: '100%'
+  },
+  button: {
+    marginVertical: sizes.sm
   }
 })

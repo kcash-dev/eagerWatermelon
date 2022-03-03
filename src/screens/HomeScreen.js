@@ -45,58 +45,57 @@ const HomeScreen = () => {
     setInterval(() => {
       const now = moment().format('MMMM Do YYYY, h:mm:ss a')
       setCurrentTime(now)
-      if (habitTimesCollection.length > 0) {
-        const timeNow = moment(moment().format())
-        const habitTime = moment(moment(habitTimesCollection[0]).format())
-        const timeDifferenceMs = habitTime.diff(timeNow)
-        if(timeDifferenceMs < 0) {
-          const habitTimeTomorrow = moment(habitTime).add(1, 'd')
-          const tomorrowDifference = timeNow.to(habitTimeTomorrow)
-          setDifferenceInTime(tomorrowDifference)
-          
-          const timeTilHabit = habitTimeTomorrow.diff(timeNow)
-          if(timeTilHabit < 900000) {
-            setHabitUpcoming(true)
-            const upcomingHabits = findUpcomingHabits()
-            setUpcomingHabitObj([{
-              upcomingHabits
-            }])
-          } else if (timeTilHabit < -900000) {
-            setHabitUpcoming(false)
-          }
-
-        } else {
-          const diff = timeNow.to(habitTime)
-          if(diff < 900000) {
-            setHabitUpcoming(true)
-            const upcomingHabits = findUpcomingHabits()
-            setUpcomingHabitObj([{
-              upcomingHabits
-            }])
-          }
-          setDifferenceInTime(diff)
-        }
-      }
     }, 1000)
   }, [])
 
-  const findUpcomingHabits = habitsList.filter(habit => {
-    const habitTime = moment(moment(habit.habitTimeOfDay).format())
+  useEffect(() => {
     const timeNow = moment(moment().format())
-    const timeDifferenceMs = timeNow.to(habitTime)
-    if (timeDifferenceMs < 900000) {
+    const habitTime = moment(moment(habitTimesCollection[0]).format())
+    const timeDifferenceMs = habitTime.diff(timeNow)
+
+    if (habitTimesCollection.length > 0) {
+      if(timeDifferenceMs < 0) {
+
+        const habitTimeTomorrow = moment(habitTime).add(1, 'd')
+        const tomorrowDifference = timeNow.to(habitTimeTomorrow)
+        setDifferenceInTime(tomorrowDifference)
+        const timeTilHabit = habitTimeTomorrow.diff(timeNow)
+
+      } else {
+
+        const diff = timeNow.to(habitTime)
+        if(timeDifferenceMs < 900000) {
+          
+          setHabitUpcoming(true)
+          const upcomingHabits = habitsList.filter(checkHabit)
+          setUpcomingHabitObj(upcomingHabits)
+
+        }
+
+        setDifferenceInTime(diff)
+
+      }
+    }
+  }, [ currentTime ])
+
+  const checkHabit = (habit) => {
+    const timeNow = moment(moment().format())
+    const todaysHabitTime = moment().format('YYYY-MM-DD') + ' ' + habit.habitTimeOfDay.militaryTime
+    const habitTime = moment(moment(todaysHabitTime).format())
+    const timeDifferenceMs = habitTime.diff(timeNow)
+
+    if (timeDifferenceMs < 90000) {
       return habit
     }
-  })
+  }
 
   useEffect(() => {
     getExistingHabitTimes(habitsList)
   }, [ habitsList ])
 
-  console.log(habitTimesCollection)
   const getExistingHabitTimes = (list) => {
     for(let i = 0; i < list.length; i++) {
-      const time = list[i].habitTimeOfDay
+      const time = list[i].habitTimeOfDay.militaryTime
       let hms = moment().format('YYYY-MM-DD') + ' ' + time
       setHabitTimesCollection([
         ...habitTimesCollection,
@@ -104,8 +103,6 @@ const HomeScreen = () => {
       ])
     }
   }
-
-  
 
   //Animations
   const transitionConfig = {
@@ -132,6 +129,7 @@ const HomeScreen = () => {
   }
 
   const setNewHabit = () => {
+    const color = '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')
     setHabitsList([
       ...habitsList,
       {
@@ -139,7 +137,8 @@ const HomeScreen = () => {
         habitChain: habitChain,
         habitTime: habitTime,
         habitTimeOfDay: habitTimeOfDay,
-        habitLength: habitLength
+        habitLength: habitLength,
+        containerColor: color
       }
     ])
     habitInputHeight.value = windowHeight
@@ -185,7 +184,7 @@ const HomeScreen = () => {
               <Text style={ styles.timeText }>{ currentTime }</Text>
               { habitsList.length > 0 ?
                 <View style={ styles.timeUntilContainer }>
-                  <Text style={ styles.timeText }>You will {habitsList[0]?.habitChain.name.toLowerCase()} then { habitsList[0].habitName.toLowerCase() } { differenceInTime }</Text>
+                  <Text style={ styles.timeText }>You will {habitsList[0]?.habitChain.name.toLowerCase()} then { habitsList[0].habitName.toLowerCase() } { differenceInTime }.</Text>
                 </View>
                 :
                 null
@@ -197,6 +196,7 @@ const HomeScreen = () => {
                 renderItem={({ item }) => <HabitContainer item={ item } />}
                 keyExtractor={item => item.habitName}
                 contentContainerStyle={{ marginVertical: '10%' }}
+                scrollEnabled={ false }
               />
             </View>
           </View>

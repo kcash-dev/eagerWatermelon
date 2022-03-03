@@ -6,7 +6,7 @@ import Carousel from 'react-native-snap-carousel';
 import { colors, fontSizes, sizes } from '../../theme/Variables'
 
 const UpcomingHabit = ({ habitsList }) => {
-    console.log(habitsList, "LIST")
+    console.log(habitsList)
     return (
         <View>
             { habitsList?.length > 0 ?

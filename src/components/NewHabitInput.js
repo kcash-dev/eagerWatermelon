@@ -249,7 +249,8 @@ const NewHabitInput = ({
 
   const habitTimeOfDayPress = (time) => {
     const updatedTime = time.slice(0, time.length - 2)
-    const slicedTime = time.slice(0, 2)
+    const slicedTime = updatedTime.slice(0, 2)
+    const amOrPm = time.slice(time.length - 2, time.length)
     let finalTime;
     if (slicedTime === '10' || slicedTime === '11' || slicedTime === '12') {
       finalTime = `${updatedTime}:00`
@@ -257,7 +258,21 @@ const NewHabitInput = ({
       finalTime = `0${updatedTime}:00`
     }
 
-    setHabitTimeOfDay(finalTime)
+    let militaryTime;
+    if(amOrPm === 'pm') {
+      const timeToNumber = parseInt(slicedTime)
+      const militaryNumber = 12 + timeToNumber
+      const numberToString = militaryNumber.toString()
+      const timeString = updatedTime.slice(2, updatedTime.length)
+      militaryTime = `${numberToString}:${timeString}:00`
+    } else {
+      militaryTime = finalTime
+    }
+    
+    setHabitTimeOfDay({
+      displayTime: finalTime,
+      militaryTime: militaryTime
+    })
     namePosition.value = -1500
     timePosition.value = -1000
     timeOfDayPosition.value = -500
@@ -464,7 +479,7 @@ const NewHabitInput = ({
           entering={FadeIn.delay(300)}
           layout={Layout.springify()}
         >
-            After I <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitChain.name?.toUpperCase() }</Text> at <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitTimeOfDay }</Text>, I will <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitName?.toUpperCase() }</Text> for <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitLength?.toUpperCase() }</Text> every <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitTime?.time.toUpperCase() }</Text>.
+            After I <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitChain.name?.toUpperCase() }</Text> at <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitTimeOfDay?.displayTime }</Text>, I will <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitName?.toUpperCase() }</Text> for <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitLength?.toUpperCase() }</Text> every <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitTime?.time.toUpperCase() }</Text>.
         </Animated.Text>
         <View style={ styles.button }>
           <Button 

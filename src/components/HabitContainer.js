@@ -14,7 +14,7 @@ import PressableWrapper from './PressableWrapper';
 const HabitContainer = ({ item }) => {
     const [ completed, setCompleted ] = useState(0)
     const progressWidth = useSharedValue('0%')
-    const color = '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')
+    
 
     const onPress = () => {
         if (completed < 1) {
@@ -47,7 +47,7 @@ const HabitContainer = ({ item }) => {
                 <Animated.View 
                     style={[
                         { 
-                            backgroundColor: color, 
+                            backgroundColor: item.containerColor, 
                             height: '100%', 
                             borderRadius: 8,
                             position: 'absolute' 
