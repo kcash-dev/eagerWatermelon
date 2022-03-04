@@ -53,13 +53,20 @@ const HomeScreen = () => {
     const habitTime = moment(moment(habitTimesCollection[0]).format())
     const timeDifferenceMs = habitTime.diff(timeNow)
 
-    if (habitTimesCollection.length > 0) {
-      if(timeDifferenceMs < 0) {
+    function minutesToMillis(minutes) {
+      const millis = Math.floor(minutes * 60000);
+      return millis;
+    }
 
+    const habitLengthMs = minutesToMillis(habitLength?.value)
+
+
+    if (habitTimesCollection.length > 0) {
+      if(timeDifferenceMs + habitLengthMs < 0) {
+        setHabitUpcoming(false)
         const habitTimeTomorrow = moment(habitTime).add(1, 'd')
         const tomorrowDifference = timeNow.to(habitTimeTomorrow)
         setDifferenceInTime(tomorrowDifference)
-        const timeTilHabit = habitTimeTomorrow.diff(timeNow)
 
       } else {
 
@@ -83,8 +90,7 @@ const HomeScreen = () => {
     const todaysHabitTime = moment().format('YYYY-MM-DD') + ' ' + habit.habitTimeOfDay.militaryTime
     const habitTime = moment(moment(todaysHabitTime).format())
     const timeDifferenceMs = habitTime.diff(timeNow)
-
-    if (timeDifferenceMs < 90000) {
+    if (timeDifferenceMs < 900000) {
       return habit
     }
   }

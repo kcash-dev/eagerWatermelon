@@ -151,27 +151,33 @@ const NewHabitInput = ({
   const lengths = [
     { 
       name: '10 minutes',
-      color: 'rgba(157, 226, 97, 0.8)'
+      color: 'rgba(157, 226, 97, 0.8)',
+      value: 10
     },
     {
       name: '15 minutes',
-      color: 'rgba(241, 126, 252, 0.8)'
+      color: 'rgba(241, 126, 252, 0.8)',
+      value: 15
     },
     {
       name: '30 minutes',
-      color: 'rgba(73, 12, 73, 0.8)'
+      color: 'rgba(73, 12, 73, 0.8)',
+      value: 30
     },
     { 
       name: '45 minutes',
-      color: 'rgba(90, 155, 173, 0.8)'
+      color: 'rgba(90, 155, 173, 0.8)',
+      value: 45
     },
     {
       name: '1 hour',
-      color: 'rgba(213, 226, 122, 0.8)'
+      color: 'rgba(213, 226, 122, 0.8)',
+      value: 60
     },
     { 
       name: '2 hours',
-      color: 'rgba(140, 4, 20, 0.8)'
+      color: 'rgba(140, 4, 20, 0.8)',
+      value: 120
     }
   ]
 
@@ -355,9 +361,8 @@ const NewHabitInput = ({
   return (
     <View style={ styles.container }>
       <Animated.View 
-        style={{ alignItems: 'center' }}
+        style={[{ alignItems: 'center' }, habitNameStyles ]}
         exiting={SlideOutLeft}
-        style={ habitNameStyles }
       >
         <View style={[ styles.inputContainer, shadow, { backgroundColor: nameInputIsFocused ? colors.white : colors.invalid } ]}>
           <TextInput 
@@ -479,7 +484,7 @@ const NewHabitInput = ({
           entering={FadeIn.delay(300)}
           layout={Layout.springify()}
         >
-            After I <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitChain.name?.toUpperCase() }</Text> at <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitTimeOfDay?.displayTime }</Text>, I will <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitName?.toUpperCase() }</Text> for <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitLength?.toUpperCase() }</Text> every <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitTime?.time.toUpperCase() }</Text>.
+            After I <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitChain.name?.toUpperCase() }</Text> at <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitTimeOfDay?.displayTime }</Text>, I will <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitName?.toUpperCase() }</Text> for <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitLength?.name.toUpperCase() }</Text> every <Text style={[ styles.text, { color: colors.secondary, backgroundColor: colors.primary } ]}>{ habitTime?.time.toUpperCase() }</Text>.
         </Animated.Text>
         <View style={ styles.button }>
           <Button 

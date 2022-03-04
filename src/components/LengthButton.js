@@ -13,7 +13,7 @@ const LengthButton = ({ item, callback }) => {
     }
   return (
     <PressableWrapper
-        pressOut={() => handleCallback(item.name)}
+        pressOut={() => handleCallback(item)}
     >
         <View style={ styles.container }>
             <View style={[styles.overlay, { backgroundColor: item.color }, shadow ]} />
