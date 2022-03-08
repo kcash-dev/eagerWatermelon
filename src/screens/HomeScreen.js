@@ -53,11 +53,6 @@ const HomeScreen = () => {
     const habitTime = moment(moment(habitTimesCollection[0]).format())
     const timeDifferenceMs = habitTime.diff(timeNow)
 
-    function minutesToMillis(minutes) {
-      const millis = Math.floor(minutes * 60000);
-      return millis;
-    }
-
     const habitLengthMs = minutesToMillis(habitLength?.value)
 
 
@@ -93,6 +88,11 @@ const HomeScreen = () => {
     if (timeDifferenceMs < 900000) {
       return habit
     }
+  }
+
+  function minutesToMillis(minutes) {
+    const millis = Math.floor(minutes * 60000);
+    return millis;
   }
 
   useEffect(() => {
@@ -179,6 +179,8 @@ const HomeScreen = () => {
           <View>
             <UpcomingHabit 
               habitsList={upcomingHabitObj}
+              differenceInTime={differenceInTime}
+              minutesToMillis={minutesToMillis}
             />
           </View>
          :
