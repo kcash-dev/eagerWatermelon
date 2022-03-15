@@ -40,6 +40,7 @@ const HomeScreen = () => {
   const [ currentTime, setCurrentTime ] = useState()
   const [ habitTimesCollection, setHabitTimesCollection ] = useState([])
   const [ differenceInTime, setDifferenceInTime ] = useState()
+  const [ habitTimeDifferenceMs, setHabitTimeDifferenceMs ] = useState()
 
   useEffect(() => {
     setInterval(() => {
@@ -52,19 +53,15 @@ const HomeScreen = () => {
     const timeNow = moment(moment().format())
     const habitTime = moment(moment(habitTimesCollection[0]).format())
     const timeDifferenceMs = habitTime.diff(timeNow)
+    setHabitTimeDifferenceMs(timeDifferenceMs)
 
     const habitLengthMs = minutesToMillis(habitLength?.value)
 
 
     if (habitTimesCollection.length > 0) {
       if(timeDifferenceMs + habitLengthMs < 0) {
-        setHabitUpcoming(false)
-        const habitTimeTomorrow = moment(habitTime).add(1, 'd')
-        const tomorrowDifference = timeNow.to(habitTimeTomorrow)
-        setDifferenceInTime(tomorrowDifference)
-
+        setHabitTimeToTomorrow(habitTime, timeNow)
       } else {
-
         const diff = timeNow.to(habitTime)
         if(timeDifferenceMs < 900000) {
           
@@ -73,9 +70,7 @@ const HomeScreen = () => {
           setUpcomingHabitObj(upcomingHabits)
 
         }
-
         setDifferenceInTime(diff)
-
       }
     }
   }, [ currentTime ])
@@ -122,6 +117,13 @@ const HomeScreen = () => {
   })
 
   //Functions
+  const setHabitTimeToTomorrow = (habitTime, timeNow) => {
+    setHabitUpcoming(false)
+    const habitTimeTomorrow = moment(habitTime).add(1, 'd')
+    const tomorrowDifference = timeNow.to(habitTimeTomorrow)
+    setDifferenceInTime(tomorrowDifference)
+  }
+
   const showHabitInput = () => {
       habitInputHeight.value = windowHeight * .0
       setInputIsShowing(true)
@@ -179,8 +181,10 @@ const HomeScreen = () => {
           <View>
             <UpcomingHabit 
               habitsList={upcomingHabitObj}
-              differenceInTime={differenceInTime}
+              differenceInTime={habitTimeDifferenceMs}
               minutesToMillis={minutesToMillis}
+              setHabitTimeToTomorrow={setHabitTimeToTomorrow}
+              habitTimesCollection={habitTimesCollection}
             />
           </View>
          :
@@ -359,7 +363,10 @@ const styles = StyleSheet.create({
       fontWeight: 'bold'
     },
     nav: {
-      height: '15%'
+      height: '15%',
+      position: 'absolute',
+      bottom: '2%',
+      width: '100%'
     },
     habitReviewContainer: {
       position: 'absolute'
